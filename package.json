@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/AleFreitas/projeto16-boardcamp#readme",
   "dependencies": {
+    "dotenv": "^16.0.3",
     "pg": "^8.9.0"
   },
   "devDependencies": {
