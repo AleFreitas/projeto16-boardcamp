@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/AleFreitas/projeto16-boardcamp/issues"
   },
-  "homepage": "https://github.com/AleFreitas/projeto16-boardcamp#readme"
+  "homepage": "https://github.com/AleFreitas/projeto16-boardcamp#readme",
+  "dependencies": {
+    "pg": "^8.9.0"
+  }
 }
