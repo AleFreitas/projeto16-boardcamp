@@ -44,7 +44,7 @@ export async function updateCustomer(req, res) {
         if(cpfTaken.rows.length !== 0){
             return res.sendStatus(409);
         }
-        await db.query(`UPDATE customers SET name=$1,phone=$2,birthday=$3 WHERE id = $4;`,[name, phone, birthday, id]);
+        await db.query(`UPDATE customers SET name=$1,phone=$2,birthday=$3,cpf=$4 WHERE id = $5;`,[name, phone, birthday, cpf, id]);
         return res.sendStatus(200);
     } catch (err) {
         return res.status(500).send(err.message);
