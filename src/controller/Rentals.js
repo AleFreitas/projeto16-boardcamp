@@ -17,11 +17,7 @@ export async function getRentals(req, res) {
 
 export async function postRental(req, res) {
     const { customerId,gameId,daysRented } = req.body;
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth();
-    const day = today.getDate();
-    const date = year+"/"+month+"/"+day;
+    const date = new Date();
     try {
         const customerExists = await db.query(`
             SELECT * FROM customers WHERE id = $1
