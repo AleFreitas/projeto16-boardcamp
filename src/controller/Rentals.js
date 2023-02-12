@@ -1,6 +1,22 @@
 import { db } from "../config/database.js";
 
 export async function getRentals(req, res) {
+    const customerIdQuery = parseInt(req.query.customerId);
+    const gameIdQuery = parseInt(req.query.gameId);
+    if(typeof req.query.customerId !== "undefined" ){
+        const customersIdFilter = await db.query(`
+            SELECT * FROM rentals
+            WHERE "customerId"=$1
+        `,[customerIdQuery]);
+        return res.send(customersIdFilter.rows);
+    }
+    if(typeof req.query.gameId !== "undefined" ){
+        const gameIdFilter = await db.query(`
+            SELECT * FROM rentals
+            WHERE "gameId"=$1
+        `,[gameIdQuery]);
+        return res.send(gameIdFilter.rows);
+    }
     try {
         const rentals = await db.query(`
             SELECT rentals.*,json_build_object('id',customers.id,'name',customers.name) as "customer" ,
