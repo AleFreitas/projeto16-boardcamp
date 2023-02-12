@@ -1,4 +1,4 @@
-import joi from 'joi'
+import joi from 'joi';
 
 export const CustomerSchema = joi.object({
     cpf: joi.string().regex(/^\d+$/).length(11),
