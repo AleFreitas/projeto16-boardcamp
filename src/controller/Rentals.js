@@ -76,7 +76,7 @@ export async function finishRental(req, res) {
         }
         const daysDifference = Math.trunc((new Date(date) - new Date(rental.rows[0].rentDate)) / (1000 * 60 * 60 * 24));
         let delayFee = 0
-        if(daysDifference >= 0){
+        if(daysDifference-rental.rows[0].daysRented >= 0){
             delayFee = (daysDifference-rental.rows[0].daysRented) * game.rows[0].pricePerDay;
         }
         await db.query(`
