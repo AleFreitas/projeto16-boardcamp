@@ -2,7 +2,13 @@ import { db } from "../config/database.js";
 
 export async function getRentals(req, res) {
     try {
-        const rentals = await db.query(`SELECT * FROM rentals`);
+        const rentals = await db.query(`
+        SELECT rentals.*,json_build_object('id',customers.id,'name',customers.name) as "customer" ,
+        json_build_object('id',games.id,'name',games.name) as "game" 
+        FROM rentals 
+        JOIN customers ON rentals."customerId" = customers.id 
+        JOIN games on rentals."gameId" = games.id;
+        `);
         return res.send(rentals.rows);
     } catch (err) {
         return res.status(500).send(err.message);
