@@ -2,7 +2,6 @@ import { db } from "../config/database.js";
 
 export async function getGames(req, res) {
     const name = req.query.name+"%";
-    console.log(name)
     if(typeof name !== "undefined" ){
         const gamesFilter = await db.query(`
             SELECT * FROM games
