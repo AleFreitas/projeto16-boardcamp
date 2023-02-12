@@ -5,15 +5,23 @@ export async function getRentals(req, res) {
     const gameIdQuery = parseInt(req.query.gameId);
     if(typeof req.query.customerId !== "undefined" ){
         const customersIdFilter = await db.query(`
-            SELECT * FROM rentals
-            WHERE "customerId"=$1
+            SELECT rentals.*,json_build_object('id',customers.id,'name',customers.name) as "customer" ,
+            json_build_object('id',games.id,'name',games.name) as "game" 
+            FROM rentals 
+            JOIN customers ON rentals."customerId" = customers.id 
+            JOIN games on rentals."gameId" = games.id
+            WHERE rentals."customerId" = $1;
         `,[customerIdQuery]);
         return res.send(customersIdFilter.rows);
     }
     if(typeof req.query.gameId !== "undefined" ){
         const gameIdFilter = await db.query(`
-            SELECT * FROM rentals
-            WHERE "gameId"=$1
+            SELECT rentals.*,json_build_object('id',customers.id,'name',customers.name) as "customer" ,
+            json_build_object('id',games.id,'name',games.name) as "game" 
+            FROM rentals 
+            JOIN customers ON rentals."customerId" = customers.id 
+            JOIN games on rentals."gameId" = games.id
+            WHERE rentals."gameId" = $1;
         `,[gameIdQuery]);
         return res.send(gameIdFilter.rows);
     }
@@ -106,13 +114,11 @@ export async function finishRental(req, res) {
 }
 
 export async function deleteRental(req, res) {
-    console.log(new Date())
     const { id } = req.params;
     try {
         const rental = await db.query(`
             Select * from rentals where id=$1
         `, [id]);
-        console.log(rental.rows)
         if(rental.rows.length === 0){
             return res.sendStatus(404)
         }
