@@ -66,7 +66,7 @@ export async function finishRental(req, res) {
             WHERE rentals.id=$1;
         `, [id])
         if (rental.rows.length === 0) {
-            return res.sendStatus(400)
+            return res.sendStatus(404)
         }
         if (game.rows.length === 0) {
             return res.status(500).send("the game for this rental has been removed from the database");
@@ -75,7 +75,10 @@ export async function finishRental(req, res) {
             return res.sendStatus(400)
         }
         const daysDifference = Math.trunc((new Date(date) - new Date(rental.rows[0].rentDate)) / (1000 * 60 * 60 * 24));
-        const delayFee = daysDifference * game.rows[0].pricePerDay;
+        let delayFee = 0
+        if(daysDifference >= 0){
+            delayFee = (daysDifference-rental.rows[0].daysRented) * game.rows[0].pricePerDay;
+        }
         await db.query(`
             UPDATE rentals SET "returnDate"=$1,"delayFee"=$2 
             WHERE id = $3;
@@ -87,6 +90,7 @@ export async function finishRental(req, res) {
 }
 
 export async function deleteRental(req, res) {
+    console.log(new Date())
     const { id } = req.params;
     try {
         const rental = await db.query(`
@@ -94,7 +98,7 @@ export async function deleteRental(req, res) {
         `, [id]);
         console.log(rental.rows)
         if(rental.rows.length === 0){
-            return res.sendStatus(400)
+            return res.sendStatus(404)
         }
         if(rental.rows[0].returnDate === null){
             return res.sendStatus(400)
