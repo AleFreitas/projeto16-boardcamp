@@ -88,25 +88,25 @@ export async function finishRental(req, res) {
             Select games.* FROM rentals 
             JOIN games ON rentals."gameId" = games.id 
             WHERE rentals.id=$1;
-        `, [id])
+        `, [id]);
         if (rental.rows.length === 0) {
-            return res.sendStatus(404)
+            return res.sendStatus(404);
         }
         if (game.rows.length === 0) {
             return res.status(500).send("the game for this rental has been removed from the database");
         }
         if (rental.rows[0].returnDate !== null) {
-            return res.sendStatus(400)
+            return res.sendStatus(400);
         }
         const daysDifference = Math.trunc((new Date(date) - new Date(rental.rows[0].rentDate)) / (1000 * 60 * 60 * 24));
-        let delayFee = 0
+        let delayFee = 0;
         if(daysDifference-rental.rows[0].daysRented >= 0){
             delayFee = (daysDifference-rental.rows[0].daysRented) * game.rows[0].pricePerDay;
         }
         await db.query(`
             UPDATE rentals SET "returnDate"=$1,"delayFee"=$2 
             WHERE id = $3;
-        `, [date, delayFee, id])
+        `, [date, delayFee, id]);
         return res.sendStatus(200);
     } catch (err) {
         return res.status(500).send(err.message);
@@ -120,15 +120,15 @@ export async function deleteRental(req, res) {
             Select * from rentals where id=$1
         `, [id]);
         if(rental.rows.length === 0){
-            return res.sendStatus(404)
+            return res.sendStatus(404);
         }
         if(rental.rows[0].returnDate === null){
-            return res.sendStatus(400)
+            return res.sendStatus(400);
         }
         await db.query(
             `DELETE FROM rentals WHERE id=$1
         `,[id]);
-        return res.sendStatus(200)
+        return res.sendStatus(200);
     } catch (err) {
         return res.status(500).send(err.message);
     }
