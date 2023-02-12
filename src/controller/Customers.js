@@ -1,6 +1,15 @@
 import { db } from "../config/database.js";
 
 export async function getCustomers(req, res) {
+    const cpfQuery = req.query.cpf+"%";
+    if(typeof cpfQuery !== "undefined" ){
+        console.log("in")
+        const customersFilter = await db.query(`
+            SELECT * FROM customers
+            WHERE LOWER(cpf) LIKE LOWER($1)
+        `,[cpfQuery]);
+        return res.send(customersFilter.rows);
+    }
     try {
         const customers = await db.query(`SELECT * FROM customers`);
         return res.send(customers.rows);
