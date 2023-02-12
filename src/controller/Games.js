@@ -1,6 +1,15 @@
 import { db } from "../config/database.js";
 
 export async function getGames(req, res) {
+    const name = req.query.name+"%";
+    console.log(name)
+    if(typeof name !== "undefined" ){
+        const gamesFilter = await db.query(`
+            SELECT * FROM games
+            WHERE LOWER(name) LIKE LOWER($1)
+        `,[name]);
+        return res.send(gamesFilter.rows);
+    }
     try {
         const games = await db.query(`SELECT * FROM games`);
         return res.send(games.rows);
